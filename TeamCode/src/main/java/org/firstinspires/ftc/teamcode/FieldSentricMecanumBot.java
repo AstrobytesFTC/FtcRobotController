@@ -23,7 +23,8 @@ class FieldCentricMecanumTeleOp extends LinearOpMode {
         //Intializing Servos
 
         wristServo = hardwareMap.get(CRServo.class, "wrist_servo");
-        intakeServo = hardwareMap.get(CRServo.class, "intake_servo");
+        intakeServo = hardwareMap.get(CRServo.class, "intake_servo");s
+
 
 
         DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
