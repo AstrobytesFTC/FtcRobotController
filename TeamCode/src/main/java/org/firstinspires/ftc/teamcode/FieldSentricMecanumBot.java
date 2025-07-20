@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ServoImpl;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,14 +13,24 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp
 class FieldCentricMecanumTeleOp extends LinearOpMode {
+    private CRServo wristServo;
+    private CRServo intakeServo;
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare our motors
         // Make sure your ID's match your configuration
+
+        //Intializing Servos
+
+        wristServo = hardwareMap.get(CRServo.class, "wrist_servo");
+        intakeServo = hardwareMap.get(CRServo.class, "intake_servo");
+
+
         DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
         DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
+
 
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
@@ -73,8 +85,29 @@ class FieldCentricMecanumTeleOp extends LinearOpMode {
             backLeftMotor.setPower(backLeftPower);
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
+
+
+            if(gamepad1.y) {
+                wristServo.setPower(0.5);
+
+            } else if(gamepad1.a) {
+                wristServo.setPower(-0.5);
+
+            } else {
+                wristServo.setPower(0.0);
+            }
+
+            if (gamepad1.x) {
+                intakeServo.setPower(1.0); // Full speed forward
+            } else if (gamepad1.b) {
+                intakeServo.setPower(-1.0); // Full speed reverse
+            } else {
+                intakeServo.setPower(0.0); // Stop
+            }
+
+            telemetry.addData("Servo Position", wristServo);
+            telemetry.addData("Servo Power", intakeServo.getPower());
+            telemetry.update();
         }
     }
 }
-
-
