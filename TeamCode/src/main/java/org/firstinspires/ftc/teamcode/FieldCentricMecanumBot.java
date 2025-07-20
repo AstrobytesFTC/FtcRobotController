@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ServoImpl;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,9 +10,10 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp
-class FieldCentricMecanumTeleOp extends LinearOpMode {
+public class FieldCentricMecanumBot extends LinearOpMode {
     private CRServo wristServo;
     private CRServo intakeServo;
+    private DcMotor armMotor;
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare our motors
@@ -23,15 +22,15 @@ class FieldCentricMecanumTeleOp extends LinearOpMode {
         //Intializing Servos
 
         wristServo = hardwareMap.get(CRServo.class, "wrist_servo");
-        intakeServo = hardwareMap.get(CRServo.class, "intake_servo");s
+        intakeServo = hardwareMap.get(CRServo.class, "intake_servo");
 
 
 
-        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
-        DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
-        DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
-        DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
-
+        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("left_front_drive");
+        DcMotor backLeftMotor = hardwareMap.dcMotor.get("left_back_drive");
+        DcMotor frontRightMotor = hardwareMap.dcMotor.get("right_front_drive");
+        DcMotor backRightMotor = hardwareMap.dcMotor.get("right_back_drive");
+        armMotor = hardwareMap.get(DcMotor.class, "arm_motor");
 
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
@@ -86,7 +85,17 @@ class FieldCentricMecanumTeleOp extends LinearOpMode {
             backLeftMotor.setPower(backLeftPower);
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
-
+            float rightTrigger = gamepad1.right_trigger;
+            float leftTrigger = gamepad1.left_trigger;
+            double armPower;
+            if (rightTrigger > 0.5){
+                armPower = 0.5;
+            }else if(leftTrigger > 0.5){
+                armPower = -0.5;
+            }else{
+                armPower = 0;
+            }
+            armMotor.setPower(armPower);
 
             if(gamepad1.y) {
                 wristServo.setPower(0.5);
