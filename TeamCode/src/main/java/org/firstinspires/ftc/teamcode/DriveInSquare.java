@@ -145,6 +145,8 @@ public class DriveInSquare extends LinearOpMode {
             // Show the target position of the armMotor on telemetry
            // telemetry.addData("Desired Position", desiredPosition);
 
+            telemetry.addLine("This is for Testing");
+
             telemetry.update();
         }
     }
