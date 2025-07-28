@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
 @TeleOp
-public class forwardAndBackward extends LinearOpMode {
+public class rightAndLeft extends LinearOpMode {
 
     DcMotor frontLeftMotor = null;
     DcMotor backLeftMotor = null;
@@ -23,15 +23,16 @@ public class forwardAndBackward extends LinearOpMode {
     double CENTIMETERS_PER_TICK = 0.0607;
 
 
-    public void encoderDrive(double dy) {
+    public void encoderTurn(double dy, double dx) {
         /* 1. Assign the motors
-           2. Make a function that takes forwards and backwards inputs
+           2. Make a function that takes strafe inputs
            3. Get all the motors positions and assign to variables
            4. Calculate what the change you need to make for the motors
            5. Tell the motors to move to the new position
            6. End the function
        */
         double ticks = dy / CENTIMETERS_PER_TICK;
+        double dxticks = dx / CENTIMETERS_PER_TICK;
 
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -46,6 +47,11 @@ public class forwardAndBackward extends LinearOpMode {
         double backRightMotorTarget = ticks + backRightMotorPos;
         double backLeftMotorTarget = ticks + backLeftMotorPos;
 
+        double frontLeftMotorTargetdx = ticks + frontLeftMotorPos;
+        double frontRightMotorTargetdx = ticks + frontRightMotorPos;
+        double backRightMotorTarget = ticks + backRightMotorPos;
+        double backLeftMotorTarget = ticks + backLeftMotorPos;
+
 
         frontLeftMotor.setTargetPosition((int) frontLeftMotorTarget);
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -53,11 +59,11 @@ public class forwardAndBackward extends LinearOpMode {
 
         backLeftMotor.setTargetPosition((int) backLeftMotorTarget);
         backLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backLeftMotor.setPower(0.5);
+        backLeftMotor.setPower(-0.5);
 
         frontRightMotor.setTargetPosition((int) frontRightMotorTarget);
         frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRightMotor.setPower(0.5);
+        frontRightMotor.setPower(-0.5);
 
         backRightMotor.setTargetPosition((int) backRightMotorTarget);
         backRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -120,7 +126,7 @@ public class forwardAndBackward extends LinearOpMode {
 
         while (opModeIsActive()) {
             if(gamepad1.a){
-                encoderDrive(-67);
+                encoderTurn(67, 67);
             }
             telemetry.addLine("Hi");
 
