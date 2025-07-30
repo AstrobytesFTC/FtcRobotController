@@ -43,16 +43,10 @@ public class encoderDriveStrafeCombine extends LinearOpMode {
         double backRightMotorPos = backRightMotor.getCurrentPosition();
 
         //dy
-        double frontLeftMotorTarget = ticks + frontLeftMotorPos;
-        double frontRightMotorTarget = ticks + frontRightMotorPos;
-        double backRightMotorTarget = ticks + backRightMotorPos;
-        double backLeftMotorTarget = ticks + backLeftMotorPos;
-
-        //dx
-        double frontLeftMotorTargetdx = dxticks + frontLeftMotorPos;
-        double frontRightMotorTargetdx = frontRightMotorPos - dxticks;
-        double backRightMotorTargetdx = dxticks + backRightMotorPos;
-        double backLeftMotorTargetdx =  backLeftMotorPos - dxticks;
+        double frontLeftMotorTarget = frontLeftMotorPos + ticks + dxticks;
+        double frontRightMotorTarget = frontRightMotorPos + ticks - dxticks;
+        double backLeftMotorTarget = backLeftMotorPos + ticks - dxticks;
+        double backRightMotorTarget = backRightMotorPos + ticks + dxticks;
 
         //dy
         frontLeftMotor.setTargetPosition((int) frontLeftMotorTarget);
@@ -73,19 +67,19 @@ public class encoderDriveStrafeCombine extends LinearOpMode {
 
 
         //dx
-        frontLeftMotor.setTargetPosition((int) frontLeftMotorTargetdx);
+        frontLeftMotor.setTargetPosition((int) frontLeftMotorTarget);
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontLeftMotor.setPower(0.5);
 
-        backLeftMotor.setTargetPosition((int) backLeftMotorTargetdx);
+        backLeftMotor.setTargetPosition((int) backLeftMotorTarget);
         backLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backLeftMotor.setPower(0.5);
 
-        frontRightMotor.setTargetPosition((int) frontRightMotorTargetdx);
+        frontRightMotor.setTargetPosition((int) frontRightMotorTarget);
         frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontRightMotor.setPower(0.5);
 
-        backRightMotor.setTargetPosition((int) backRightMotorTargetdx);
+        backRightMotor.setTargetPosition((int) backRightMotorTarget);
         backRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backRightMotor.setPower(0.5);
 
