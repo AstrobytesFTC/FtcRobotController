@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
 @TeleOp
-public class encoderDriveStrafeCombine extends LinearOpMode {
+public class encoderDriveStrafeCombineFinal extends LinearOpMode {
 
     DcMotor frontLeftMotor = null;
     DcMotor backLeftMotor = null;
@@ -31,8 +31,10 @@ public class encoderDriveStrafeCombine extends LinearOpMode {
            5. Tell the motors to move to the new position
            6. End the function
        */
-        double ticks = dy / CENTIMETERS_PER_TICK;
-        double dxticks = 1.1*(dx / CENTIMETERS_PER_TICK);
+
+        //dy and dx are negated due to the robot's inversed movement
+        double ticks = -dy / CENTIMETERS_PER_TICK;
+        double dxticks = 1.1*(-dx / CENTIMETERS_PER_TICK);
 
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -42,7 +44,7 @@ public class encoderDriveStrafeCombine extends LinearOpMode {
         double frontRightMotorPos = frontRightMotor.getCurrentPosition();
         double backRightMotorPos = backRightMotor.getCurrentPosition();
 
-        //dy
+        //dy & dx
         double frontLeftMotorTarget = frontLeftMotorPos + ticks + dxticks;
         double frontRightMotorTarget = frontRightMotorPos + ticks - dxticks;
         double backLeftMotorTarget = backLeftMotorPos + ticks - dxticks;
@@ -133,12 +135,12 @@ public class encoderDriveStrafeCombine extends LinearOpMode {
 
         while (opModeIsActive()) {
             if(gamepad1.a){
-                encoderDrive(-67, 67);
+                encoderDrive(67, 67);
             }
 
 
             if(gamepad1.b){
-                encoderDrive(-67, 0);
+                encoderDrive(67, 0);
             }
 
             if(gamepad1.y){
