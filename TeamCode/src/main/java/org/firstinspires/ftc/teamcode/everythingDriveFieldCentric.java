@@ -2,17 +2,25 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 @TeleOp
-public class encoderDriveStrafeCombineFinal extends LinearOpMode {
+public class everythingDriveFieldCentric extends LinearOpMode {
 
     DcMotor frontLeftMotor = null;
     DcMotor backLeftMotor = null;
     DcMotor frontRightMotor = null;
     DcMotor backRightMotor = null;
+
+    CRServo wristServo = null;
+    CRServo intakeServo = null;
+
+
 
 
 
@@ -32,10 +40,9 @@ public class encoderDriveStrafeCombineFinal extends LinearOpMode {
            6. End the function
        */
 
-
         //dy and dx are negated due to the robot's inversed movement
         double ticks = -dy / CENTIMETERS_PER_TICK;
-        double dxticks = 1.1*(-dx / CENTIMETERS_PER_TICK);
+        double dxticks = 1.1 * (-dx / CENTIMETERS_PER_TICK);
 
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -114,7 +121,9 @@ public class encoderDriveStrafeCombineFinal extends LinearOpMode {
          backLeftMotor = hardwareMap.dcMotor.get("left_back_drive");
          frontRightMotor = hardwareMap.dcMotor.get("right_front_drive");
          backRightMotor = hardwareMap.dcMotor.get("right_back_drive");
-
+         DcMotor armMotor = hardwareMap.get(DcMotor.class, "arm_motor");
+         wristServo = hardwareMap.get(CRServo.class, "wrist_servo");
+         intakeServo = hardwareMap.get(CRServo.class, "intake_servo");
 
 
 
@@ -135,23 +144,67 @@ public class encoderDriveStrafeCombineFinal extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
-            if(gamepad1.a){
-                encoderDrive(67, 67);
+            double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
+            double x = gamepad1.left_stick_x;
+            double rx = gamepad1.right_stick_x;
+
+            // This button choice was made so that it is hard to hit on accident,
+            // it can be freely changed based on preference.
+            // The equivalent button is start on Xbox-style controllers.
+            if (gamepad1.options) {
+                imu.resetYaw();
             }
 
+            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
-            if(gamepad1.b){
-                encoderDrive(67, 0);
+            // Rotate the movement direction counter to the bot's rotation
+            double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+            double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+
+            rotX = rotX * 1.1;  // Counteract imperfect strafing
+
+
+            double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+            double frontLeftPower = (rotY + rotX + rx) / denominator;
+            double backLeftPower = (rotY - rotX + rx) / denominator;
+            double frontRightPower = (rotY - rotX - rx) / denominator;
+            double backRightPower = (rotY + rotX - rx) / denominator;
+
+            frontLeftMotor.setPower(frontLeftPower);
+            backLeftMotor.setPower(backLeftPower);
+            frontRightMotor.setPower(frontRightPower);
+            backRightMotor.setPower(backRightPower);
+            float rightTrigger = gamepad1.right_trigger;
+            float leftTrigger = gamepad1.left_trigger;
+            double armPower;
+
+
+            if (rightTrigger > 0.5){
+                armPower = 0.5;
+            }else if(leftTrigger > 0.5){
+                armPower = -0.5;
+            }else{
+                armPower = 0;
             }
+            armMotor.setPower(armPower);
 
-            if(gamepad1.y){
-                encoderDrive(0, 67);
+
+
+            if(gamepad1.dpad_right){
+                encoderDrive(57, 0);
+                encoderDrive(0, 57);
+                encoderDrive(-57, 0);
+                encoderDrive(0, -57);
+
+
             }
 
             telemetry.addData("frontLeftMotorPos:", frontLeftMotor.getCurrentPosition());
             telemetry.addData("frontRightMotorPos:", frontRightMotor.getCurrentPosition());
             telemetry.addData("backLeftMotorPos", backLeftMotor.getCurrentPosition());
             telemetry.addData("backRightMotorPos", backRightMotor.getCurrentPosition());
+
+            telemetry.addLine("pressing dpad Right makes robot go in square");
 
 
 
