@@ -178,7 +178,7 @@ public class everythingDriveFieldCentric extends LinearOpMode {
             float leftTrigger = gamepad1.left_trigger;
             double armPower;
 
-
+            //Arm Motor
             if (rightTrigger > 0.5){
                 armPower = 0.5;
             }else if(leftTrigger > 0.5){
@@ -188,8 +188,25 @@ public class everythingDriveFieldCentric extends LinearOpMode {
             }
             armMotor.setPower(armPower);
 
+            //Servo
+            if(gamepad1.y){
+                intakeServo.setPower(0.5);
+            } else if(gamepad1.a){
+                intakeServo.setPower(-0.5);
+            } else {
+                intakeServo.setPower(0);
+            }
+
+            if(gamepad1.x){
+                wristServo.setPower(0.5);
+            } else if(gamepad1.b){
+                wristServo.setPower(-0.5);
+            } else {
+                wristServo.setPower(0);
+            }
 
 
+            //Moving Square
             if(gamepad1.dpad_right){
                 encoderDrive(57, 0);
                 encoderDrive(0, 57);
