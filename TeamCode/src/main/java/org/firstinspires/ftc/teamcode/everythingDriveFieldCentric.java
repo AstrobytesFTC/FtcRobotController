@@ -216,6 +216,10 @@ public class everythingDriveFieldCentric extends LinearOpMode {
 
             }
 
+            if(gamepad1.dpad_down){
+                encoderDrive(60, 0);
+            }
+
             telemetry.addData("frontLeftMotorPos:", frontLeftMotor.getCurrentPosition());
             telemetry.addData("frontRightMotorPos:", frontRightMotor.getCurrentPosition());
             telemetry.addData("backLeftMotorPos", backLeftMotor.getCurrentPosition());
