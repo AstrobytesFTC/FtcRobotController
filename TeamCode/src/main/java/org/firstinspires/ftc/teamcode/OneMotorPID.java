@@ -84,7 +84,7 @@ public class OneMotorPID extends LinearOpMode {
         while (opModeIsActive()) {
             oneMotor.setPower(PIDCONTROL(100, oneMotor.getCurrentPosition()));
             dashboardTelemetry.addData("Motor Power", oneMotor.getPower());
-            dashboardTelemetry.addData("Encoder Position", oneMotor.getCurrentPosition());
+            dashboardTelemetry.addData("Encoder Position", oneMotor .getCurrentPosition());
 
             // Update the dashboard with the new telemetry data
             dashboardTelemetry.update();
