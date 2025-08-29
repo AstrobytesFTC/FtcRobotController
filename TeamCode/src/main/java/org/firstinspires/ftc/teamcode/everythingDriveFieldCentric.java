@@ -17,8 +17,9 @@ public class everythingDriveFieldCentric extends LinearOpMode {
     DcMotor frontRightMotor = null;
     DcMotor backRightMotor = null;
 
-    CRServo wristServo = null;
-    CRServo intakeServo = null;
+    DcMotor outake1 = null;
+    DcMotor outake2 = null;
+    DcMotor intake = null;
 
 
 
@@ -29,6 +30,34 @@ public class everythingDriveFieldCentric extends LinearOpMode {
     double TPR = 537.7;
     //Centimeters Per Tick
     double CENTIMETERS_PER_TICK = 0.0607;
+
+    public void setintake(double ticks){
+        double intakePos = intake.getCurrentPosition();
+
+        double intakeTarget = intakePos + ticks;
+
+        intake.setTargetPosition((int) intakeTarget);
+        intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        intake.setPower(0.5);
+
+    }
+
+    public void setOutake(double ticks){
+        double outake1Pos = outake1.getCurrentPosition();
+
+
+        double outakeTarget = outake1Pos + ticks;
+
+        outake1.setTargetPosition((int) outakeTarget);
+        outake1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        outake1.setPower(0.5);
+
+        outake2.setTargetPosition((int) outakeTarget);
+        outake2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        outake2.setPower(0.5);
+
+
+    }
 
 
     public void encoderDrive(double dy, double dx) {
@@ -117,13 +146,14 @@ public class everythingDriveFieldCentric extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // Position of the wheel after driving forward
 
-         frontLeftMotor = hardwareMap.dcMotor.get("left_front_drive");
-         backLeftMotor = hardwareMap.dcMotor.get("left_back_drive");
-         frontRightMotor = hardwareMap.dcMotor.get("right_front_drive");
-         backRightMotor = hardwareMap.dcMotor.get("right_back_drive");
-         DcMotor armMotor = hardwareMap.get(DcMotor.class, "arm_motor");
-         wristServo = hardwareMap.get(CRServo.class, "wrist_servo");
-         intakeServo = hardwareMap.get(CRServo.class, "intake_servo");
+        frontLeftMotor = hardwareMap.dcMotor.get("left_front_drive");
+        backLeftMotor = hardwareMap.dcMotor.get("left_back_drive");
+        frontRightMotor = hardwareMap.dcMotor.get("right_front_drive");
+        backRightMotor = hardwareMap.dcMotor.get("right_back_drive");
+        outake1 = hardwareMap.dcMotor.get("outake1");
+        outake2 = hardwareMap.dcMotor.get("outake2");
+        intake = hardwareMap.dcMotor.get("intake");
+
 
 
 
@@ -135,7 +165,7 @@ public class everythingDriveFieldCentric extends LinearOpMode {
         // Adjust the orientation parameters to match your robot
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+                RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
 
@@ -178,34 +208,12 @@ public class everythingDriveFieldCentric extends LinearOpMode {
             float leftTrigger = gamepad1.left_trigger;
             double armPower;
 
-            //Arm Motor
-            if (rightTrigger > 0.5){
-                armPower = 0.5;
-            }else if(leftTrigger > 0.5){
-                armPower = -0.5;
-            }else{
-                armPower = 0;
+            if(gamepad1.a){
+                outake1.setPower(-1);
+                outake2.setPower(1);
+                intake.setPower(-1);
+
             }
-            armMotor.setPower(armPower);
-
-            //Servo
-            if(gamepad1.y){
-                intakeServo.setPower(0.5);
-            } else if(gamepad1.a){
-                intakeServo.setPower(-0.5);
-            } else {
-                intakeServo.setPower(0);
-            }
-
-            if(gamepad1.x){
-                wristServo.setPower(0.5);
-            } else if(gamepad1.b){
-                wristServo.setPower(-0.5);
-            } else {
-                wristServo.setPower(0);
-            }
-
-
             //Moving Square
             if(gamepad1.dpad_right){
                 encoderDrive(57, 0);
@@ -224,6 +232,10 @@ public class everythingDriveFieldCentric extends LinearOpMode {
             telemetry.addData("frontRightMotorPos:", frontRightMotor.getCurrentPosition());
             telemetry.addData("backLeftMotorPos", backLeftMotor.getCurrentPosition());
             telemetry.addData("backRightMotorPos", backRightMotor.getCurrentPosition());
+
+            telemetry.addData("intake", intake.getCurrentPosition());
+            telemetry.addData("outake1", outake1.getCurrentPosition());
+            telemetry.addData("outake2", outake2.getCurrentPosition());
 
             telemetry.addLine("pressing dpad Right makes robot go in square");
 
