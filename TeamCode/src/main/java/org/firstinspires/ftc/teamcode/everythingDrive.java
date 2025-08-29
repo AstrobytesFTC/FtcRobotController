@@ -117,8 +117,6 @@ public class everythingDrive extends LinearOpMode {
          backLeftMotor = hardwareMap.dcMotor.get("left_back_drive");
          frontRightMotor = hardwareMap.dcMotor.get("right_front_drive");
          backRightMotor = hardwareMap.dcMotor.get("right_back_drive");
-         DcMotor armMotor = hardwareMap.get(DcMotor.class, "arm_motor");
-
 
 
 
@@ -171,15 +169,8 @@ public class everythingDrive extends LinearOpMode {
             backRightMotor.setPower(backRightPower);
             float rightTrigger = gamepad1.right_trigger;
             float leftTrigger = gamepad1.left_trigger;
-            double armPower;
-            if (rightTrigger > 0.5){
-                armPower = 0.5;
-            }else if(leftTrigger > 0.5){
-                armPower = -0.5;
-            }else{
-                armPower = 0;
-            }
-            armMotor.setPower(armPower);
+
+
 
             if(gamepad1.a){
                 encoderDrive(67, 67);
